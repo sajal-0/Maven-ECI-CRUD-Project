@@ -17,12 +17,14 @@ The ECI Management System is a Java-based application for managing and retrievin
 
 
 
-Project Structure
+
+
+
+
+
+## Project Structure
 
 This project is organized into the following packages:
-
-
-## Table Content
 
 - com.tka.eci.entity
   Contains the Candidate class, representing a candidate with properties like ID, name, party, state, assembly, etc.
