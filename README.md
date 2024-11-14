@@ -53,9 +53,9 @@ By party, assembly, state-party combination, gender, age, and status.
 - Accepted Candidate Count by Assembly: Count candidates with "Accepted" status by a specific assembly.
 
 ## Technologies
-Java: Core programming language used to build the application.<be>
+Java: Core programming language used to build the application.<br>
 JDBC: To connect and interact with a SQL database.<br>
-SQL Database: Stores all candidate data for retrieval and modification.<be>
+SQL Database: Stores all candidate data for retrieval and modification.<br>
 
 ## Usage
 
