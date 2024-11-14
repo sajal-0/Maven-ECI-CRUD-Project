@@ -1,5 +1,5 @@
 
-##ECI Management System
+### ECI Management System
 
 The ECI Management System is a Java-based application for managing and retrieving election candidate information.<br> It offers features to add, delete, update, and query candidate records with various criteria, making it useful for election management and analysis.
 
@@ -53,9 +53,9 @@ By party, assembly, state-party combination, gender, age, and status.
 - Accepted Candidate Count by Assembly: Count candidates with "Accepted" status by a specific assembly.
 
 ## Technologies
-Java: Core programming language used to build the application.
-JDBC: To connect and interact with a SQL database.
-SQL Database: Stores all candidate data for retrieval and modification.
+Java: Core programming language used to build the application.<be>
+JDBC: To connect and interact with a SQL database.<br>
+SQL Database: Stores all candidate data for retrieval and modification.<be>
 
 ## Usage
 
