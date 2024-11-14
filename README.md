@@ -1,5 +1,5 @@
 
-### ECI Management System
+# ECI Management System
 
 The ECI Management System is a Java-based application for managing and retrieving election candidate information.<br> It offers features to add, delete, update, and query candidate records with various criteria, making it useful for election management and analysis.
 
