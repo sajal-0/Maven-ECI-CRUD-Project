@@ -1,7 +1,15 @@
 package com.tka.eci.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "candidate")
 public class Candidate {
-	
+	@Id
+	@Column(name = "cid")
 	private int c_id;
 	private String name;
 	private String party;

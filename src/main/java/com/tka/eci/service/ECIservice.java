@@ -113,13 +113,13 @@ public class ECIservice {
 		return list;
 	}
 	
-	public List<Candidate>  deleteCandidate(int cid) throws Exception{
+	public List<Candidate>  deleteCandidate(int cid){
 		dao = new ECAdao();
 		List<Candidate> list = dao.deleteCandidate(cid);
 		return list;
 	}
 	
-	public List<Candidate>  updateCandidate(int cid) throws Exception{
+	public List<Candidate>  updateCandidate(int cid){
 		dao = new ECAdao();
 		List<Candidate> list = dao.updateCandidate(cid);
 		return list;

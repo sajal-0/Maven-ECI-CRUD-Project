@@ -2,11 +2,12 @@ package com.tka.eci.client;
 
 import java.util.List;
 import java.util.Scanner;
+
 import com.tka.eci.controller.ECIcontroller;
 import com.tka.eci.entity.Candidate;
 
 public class ECIclient {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         ECIcontroller con = new ECIcontroller();
         Scanner sc = new Scanner(System.in);
         int choice;

@@ -1,6 +1,7 @@
 package com.tka.eci.dao;
 
 import java.sql.Connection;
+
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,177 +11,199 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
+
 import com.tka.eci.entity.Candidate;
 import com.tka.eci.utility.Utility;
 
 public class ECAdao {
 
-	List<Candidate> allCandidate = null;
-	Scanner sc = null;
-
-	String sql = "SELECT * FROM advjava193.candidate";
-
-	Connection conn = null;
-	Statement stmt = null;
-	ResultSet rs = null;
+	 List<Candidate> list = null;
+	    Session session = null;
+	    Transaction t = null;
+	    Scanner sc = new Scanner(System.in);
+	
 
 	public List<Candidate> allCandidate() {
-
-		try {
-			conn = Utility.support();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(sql);
-
-			allCandidate = new ArrayList<>();
-
-			while (rs.next()) {
-				int cid = rs.getInt("cid");
-				String name = rs.getString("name");
-				String party = rs.getString("party");
-				String state = rs.getString("state");
-				String assembly = rs.getString("assembly");
-				int assem_no = rs.getInt("assembly_no");
-				String status = rs.getString("status");
-				String gen = rs.getString("gender");
-				int age = rs.getInt("age");
-
-				Candidate obj = new Candidate(cid, name, party, state, assembly, assem_no, status, gen, age);
-				allCandidate.add(obj);
-
-			}
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		return allCandidate;
+	   
+		list = new ArrayList<>();
+		
+	    try (SessionFactory sessionFactory = new Configuration().configure().addAnnotatedClass(Candidate.class).buildSessionFactory()) {
+	        
+	    	session = sessionFactory.openSession();
+	        t = session.beginTransaction();
+	        
+	        Query query = session.createQuery("from Candidate"); 
+	        list = query.list();
+	        
+	        t.commit();
+	    } catch (Exception e) {
+	        if (t != null) {
+	            t.rollback(); 
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        if (session != null) {
+	            session.close(); 
+	        }
+	    }
+	    
+	    return list;
 	}
+
+
+
+
 
 	public List<Candidate> insertCandidate() {
+	   list = new ArrayList<>();
+	   sc = new Scanner(System.in);
+	   
 
-		String sql = "INSERT INTO advjava193.candidate VALUES(?,?,?,?,?,?,?,?,?)";
-		sc = new Scanner(System.in);
+	    try (SessionFactory sessionFactory = new Configuration().configure().addAnnotatedClass(Candidate.class).buildSessionFactory()) {
+	    	
+	    	 Session session = sessionFactory.openSession();
 
-		try {
-			conn = Utility.support();
-			PreparedStatement st = conn.prepareStatement(sql);
+	        System.out.println("Enter candidate details:");
 
-			allCandidate = new ArrayList<>();
+	        System.out.print("Enter Name: ");
+	        String name = sc.nextLine();
 
-			System.out.print("Enter Candidate ID: ");
-			int cid = sc.nextInt();
-			st.setInt(1, cid);
-			sc.nextLine();
+	        System.out.print("Enter Party: ");
+	        String party = sc.nextLine();
 
-			System.out.print("Enter Name: ");
-			String name = sc.nextLine();
-			st.setString(2, name);
+	        System.out.print("Enter State: ");
+	        String state = sc.nextLine();
 
-			System.out.print("Enter Party: ");
-			String party = sc.nextLine();
-			st.setString(3, party);
+	        System.out.print("Enter Assembly: ");
+	        String assembly = sc.nextLine();
 
-			System.out.print("Enter State: ");
-			String state = sc.nextLine();
-			st.setString(4, state);
+	        System.out.print("Enter Assembly No: ");
+	        int assemblyNo = sc.nextInt();
+	        sc.nextLine();
 
-			System.out.print("Enter Assembly: ");
-			String assembly = sc.nextLine();
-			st.setString(5, assembly);
+	        System.out.print("Enter Status (Accepted/Rejected/Withdrawn): ");
+	        String status = sc.nextLine();
 
-			System.out.print("Enter Assembly No: ");
-			int assemblyNo = sc.nextInt();
-			st.setInt(6, assemblyNo);
-			sc.nextLine();
+	        System.out.print("Enter Gender (Male/Female): ");
+	        String gender = sc.nextLine();
 
-			System.out.print("Enter Status (Accepted/Rejected/Withdrawn): ");
-			String status = sc.nextLine();
-			st.setString(7, status);
+	        System.out.print("Enter Age: ");
+	        int age = sc.nextInt();
 
-			System.out.print("Enter Gender (Male/Female): ");
-			String gender = sc.nextLine();
-			st.setString(8, gender);
+	        Candidate candidate = new Candidate();
+	        candidate.setName(name);
+	        candidate.setParty(party);
+	        candidate.setState(state);
+	        candidate.setAssembly(assembly);
+	        candidate.setAssembly_no(assemblyNo);
+	        candidate.setStatus(status);
+	        candidate.setGender(gender);
+	        candidate.setAge(age);
 
-			System.out.print("Enter Age: ");
-			int age = sc.nextInt();
-			st.setInt(9, age);
+	      
+	        t = session.beginTransaction();
+	        session.save(candidate);
+	        list.add(candidate);
 
-			int eu = st.executeUpdate();
+	        t.commit();
+	        System.out.println("Candidate inserted successfully!");
 
-			if (eu > 0) {
-				System.out.println("Data inserted");
-			} else {
-				System.out.println("Not inserted");
-			}
-
-			Candidate candidate = new Candidate(cid, name, party, state, assembly, assemblyNo, status, gender, age);
-			allCandidate.add(candidate);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-		return allCandidate;
-	}
-	
-	
-	public List<Candidate> deleteCandidate(int cid) throws SQLException {
-		
-		String  sql = "DELETE FROM advjava193.candidate WHERE cid = ?";
-	
-		conn = Utility.support();
-		PreparedStatement pstmt = conn.prepareStatement(sql);
-	       
-		pstmt.setInt(1, cid);
-	        
-	    int rowsAffected = pstmt.executeUpdate();
-		
-		if(rowsAffected>0) {
-			 System.out.println("candidate has been removed");
-		 }else {
-			 System.out.println("No candidate found");
-		 }
-		
-		return allCandidate();
-		
-	}
-	
-	public List<Candidate> updateCandidate(int cid) throws SQLException  {
-	    String sql = "UPDATE advjava193.candidate SET name = ?, party = ?, state = ?, assembly = ? WHERE cid = ?";
-	    sc = new Scanner(System.in);
-
-	    conn = Utility.support();
-	    PreparedStatement st = conn.prepareStatement(sql);
-
-	    System.out.print("Enter Name: ");
-	    String name = sc.nextLine();
-	    st.setString(1, name);
-
-	    System.out.print("Enter Party: ");
-	    String party = sc.nextLine();
-	    st.setString(2, party);
-
-	    System.out.print("Enter State: ");
-	    String state = sc.nextLine();
-	    st.setString(3, state);
-
-	    System.out.print("Enter Assembly: ");
-	    String assembly = sc.nextLine();
-	    st.setString(4, assembly);
-
-	   	   
-	    st.setInt(5, cid);
-
-	    int eu = st.executeUpdate();
-
-	    if (eu > 0) {
-	        System.out.println("Data updated");
-	    } else {
-	        System.out.println("Update failed");
+	    } catch (Exception e) {
+	        if (t != null) {
+	            t.rollback(); 
+	        }
+	        e.printStackTrace();
 	    }
 
-	    return allCandidate();
+	    return list;
 	}
+
+	
+	
+	public List<Candidate> deleteCandidate(int candidateId) {
+	    list = new ArrayList<>();
+	    
+	    try (SessionFactory sessionFactory = new Configuration().configure().addAnnotatedClass(Candidate.class).buildSessionFactory()) {
+	    	 
+	    	Session session = sessionFactory.openSession();
+	    	t = session.beginTransaction();
+	        Candidate candidate = session.get(Candidate.class, candidateId);
+	        
+	       
+	        if (candidate != null) {
+	            session.delete(candidate);
+	            System.out.println("Candidate deleted successfully!");
+	        } else {
+	            System.out.println("Candidate with ID " + candidateId + " not found.");
+	        }
+
+	        t.commit();
+
+	        // Fetch updated list of all candidates
+	        list = session.createQuery("from Candidate", Candidate.class).getResultList();
+
+	    } catch (Exception e) {
+	        if (t != null) {
+	            t.rollback();
+	        }
+	        e.printStackTrace();
+	    }
+
+	    return list;
+	}
+
+	
+	public List<Candidate> updateCandidate(int cid) {
+	    list = new ArrayList<>();
+	    sc = new Scanner(System.in);
+	    try (SessionFactory sessionFactory = new Configuration().configure().addAnnotatedClass(Candidate.class).buildSessionFactory()) {
+	    	
+	    	Session session = sessionFactory.openSession();
+	    	t = session.beginTransaction();
+	    	Candidate candidate = session.get(Candidate.class, cid);
+	    	
+	        if (candidate != null) {
+
+	            System.out.print("Enter Name: ");
+	            String name = sc.nextLine();
+	            candidate.setName(name);
+
+	            System.out.print("Enter Party: ");
+	            String party = sc.nextLine();
+	            candidate.setParty(party);
+
+	            System.out.print("Enter State: ");
+	            String state = sc.nextLine();
+	            candidate.setState(state);
+
+	            System.out.print("Enter Assembly: ");
+	            String assembly = sc.nextLine();
+	            candidate.setAssembly(assembly);
+
+	            session.update(candidate);
+	            t.commit();
+	            System.out.println("Candidate updated successfully!");
+	        } else {
+	            System.out.println("Candidate with ID " + cid + " not found.");
+	        }
+
+	        list = session.createQuery("from Candidate", Candidate.class).getResultList();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return list;
+	}
+
 
 }

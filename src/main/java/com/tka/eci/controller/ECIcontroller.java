@@ -64,13 +64,13 @@ public class ECIcontroller {
 		return list;
 	}
 	
-	public List<Candidate>  deleteCandidate(int cid) throws Exception {
+	public List<Candidate>  deleteCandidate(int cid){
 		service = new ECIservice();
 		List<Candidate> list = service.deleteCandidate(cid);
 		return list;
 	}
 	
-	public List<Candidate>   updateCandidate(int cid) throws Exception {
+	public List<Candidate>   updateCandidate(int cid){
 		service = new ECIservice();
 		List<Candidate> list = service.updateCandidate(cid);
 		return list;
